@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         DOCKER_REGISTRY = "docker.io"
-        DOCKER_IMAGE = "francdocmain/php-todo-app"
+        DOCKER_IMAGE = "citatech/php-todo-app"
         COMPOSE_FILE = "php-todo.yml"
     }
 
@@ -64,7 +64,7 @@ pipeline {
                     def response
                     retry(5) {
                         sleep(time: 30, unit: 'SECONDS')  // Increase sleep duration to allow services more time to start
-                        response = sh(script: "curl -s -o /dev/null -w '%{http_code}' http://localhost:8089", returnStdout: true).trim()
+                        response = sh(script: "curl -s -o /dev/null -w '%{http_code}' http://localhost:8080", returnStdout: true).trim()
                         echo "HTTP Status Code: ${response}"
                         if (response == '200') {
                             echo "Smoke test passed with status code 200"
@@ -83,7 +83,7 @@ pipeline {
                     withCredentials([usernamePassword(credentialsId: 'docker-credentials', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                         sh """
                         echo "\$PASSWORD" | docker login -u "\$USERNAME" --password-stdin ${DOCKER_REGISTRY}
-                        docker tag php-todo_containerization_main-todoapp ${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${env.TAG_NAME}
+                        docker tag php-todo-app ${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${env.TAG_NAME}
                         docker push ${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${env.TAG_NAME}
                         """
                     }
