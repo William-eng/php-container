@@ -30,7 +30,7 @@
                         
                                             // Build Docker image
                                             sh """
-                                            docker build -t ${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${env.TAG_NAME} .
+                                            sudo docker build -t ${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${env.TAG_NAME} .
                                             """
                                         }
                                     }
@@ -42,8 +42,8 @@
                                             // Use Jenkins credentials to login to Docker and push the image
                                             withCredentials([usernamePassword(credentialsId: 'docker-credentials', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                                                 sh """
-                                                echo ${PASSWORD} | docker login -u ${USERNAME} --password-stdin ${DOCKER_REGISTRY}
-                                                docker push ${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${env.TAG_NAME}
+                                                echo ${PASSWORD} | sudo docker login -u ${USERNAME} --password-stdin ${DOCKER_REGISTRY}
+                                                sudo docker push ${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${env.TAG_NAME}
                                                 """
                                             }
                                         }
@@ -55,7 +55,7 @@
                                         script {
                                             // Clean up Docker images to save space
                                             sh """
-                                            docker rmi ${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${env.TAG_NAME} || true
+                                            sudo docker rmi ${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${env.TAG_NAME} || true
                                             """
                                         }
                                     }
