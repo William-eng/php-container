@@ -1,0 +1,4 @@
+CREATE DATABASE toolingdb;
+CREATE USER 'Willie'@'%' IDENTIFIED BY 'Password123';
+GRANT ALL PRIVILEGES ON * . * TO 'Willie'@'%';
+FLUSH PRIVILEGES;
